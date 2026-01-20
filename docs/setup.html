@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Guide - YouTube POSTer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1 { color: #FF0000; border-bottom: 3px solid #FF0000; padding-bottom: 10px; }
+        h2 { color: #CC0000; margin-top: 30px; }
+        h3 { color: #990000; }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #FF0000;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .info {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        a { color: #FF0000; }
+        a:hover { color: #CC0000; }
+    </style>
+</head>
+<body>
+    <h1>YouTube POSTer - Setup Guide</h1>
+    
+    <p>This guide will walk you through setting up the YouTube POSTer API from scratch.</p>
+    
+    <h2>Prerequisites</h2>
+    <ul>
+        <li>Node.js 14+ installed</li>
+        <li>A Google account</li>
+        <li>A YouTube channel associated with your Google account</li>
+    </ul>
+    
+    <h2>Step 1: Google Cloud Console Setup</h2>
+    
+    <div class="step">
+        <h3>1.1 Create a Google Cloud Project</h3>
+        <ol>
+            <li>Go to <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a></li>
+            <li>Click "Select a project" → "New Project"</li>
+            <li>Enter a project name (e.g., "YouTube POSTer")</li>
+            <li>Click "Create"</li>
+        </ol>
+    </div>
+    
+    <div class="step">
+        <h3>1.2 Enable YouTube Data API v3</h3>
+        <ol>
+            <li>In your project, go to "APIs & Services" → "Library"</li>
+            <li>Search for "YouTube Data API v3"</li>
+            <li>Click on it and press "Enable"</li>
+        </ol>
+    </div>
+    
+    <div class="step">
+        <h3>1.3 Create OAuth 2.0 Credentials</h3>
+        <ol>
+            <li>Go to "APIs & Services" → "Credentials"</li>
+            <li>Click "Create Credentials" → "OAuth client ID"</li>
+            <li>If prompted, configure the OAuth consent screen:
+                <ul>
+                    <li>User Type: External (for testing) or Internal (for organization)</li>
+                    <li>App name: YouTube POSTer</li>
+                    <li>User support email: Your email</li>
+                    <li>Developer contact: Your email</li>
+                    <li>Save and Continue through all steps</li>
+                </ul>
+            </li>
+            <li>For Application type, select "Web application"</li>
+            <li>Name: YouTube POSTer Web Client</li>
+            <li>Authorized redirect URIs: Add your callback URL
+                <ul>
+                    <li>For local: <code>http://localhost:3000/oauth/callback</code></li>
+                    <li>For production: <code>https://your-domain.com/oauth/callback</code></li>
+                </ul>
+            </li>
+            <li>Click "Create"</li>
+            <li><strong>Save your Client ID and Client Secret</strong></li>
+        </ol>
+    </div>
+    
+    <div class="warning">
+        <strong>⚠️ Important:</strong> Never commit your Client Secret to version control. Keep it secure!
+    </div>
+    
+    <h2>Step 2: Local Installation</h2>
+    
+    <div class="step">
+        <h3>2.1 Clone and Install</h3>
+        <pre>git clone &lt;repository-url&gt;
+cd youtube-POSTer
+npm install</pre>
+    </div>
+    
+    <div class="step">
+        <h3>2.2 Configure Environment Variables</h3>
+        <p>Copy the example environment file:</p>
+        <pre>cp .env.example .env</pre>
+        
+        <p>Edit <code>.env</code> and fill in your values:</p>
+        <pre># Server Configuration
+PORT=3000
+NODE_ENV=development
+
+# Google OAuth Credentials
+GOOGLE_CLIENT_ID=your-client-id-here.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-client-secret-here
+GOOGLE_REDIRECT_URI=http://localhost:3000/oauth/callback
+
+# API Key for client authentication
+API_KEY=your-secure-random-api-key-here
+
+# Token storage path
+TOKEN_PATH=./tokens/youtube-token.json</pre>
+        
+        <div class="info">
+            <strong>💡 Tip:</strong> Generate a secure API key using:
+            <pre>node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"</pre>
+        </div>
+    </div>
+    
+    <h2>Step 3: OAuth Authorization</h2>
+    
+    <div class="step">
+        <h3>3.1 Start the Server</h3>
+        <pre>npm start</pre>
+        <p>The server should start on <code>http://localhost:3000</code></p>
+    </div>
+    
+    <div class="step">
+        <h3>3.2 Complete OAuth Flow</h3>
+        <ol>
+            <li>Open your browser and go to: <code>http://localhost:3000/oauth/authorize</code></li>
+            <li>You'll be redirected to Google's OAuth consent screen</li>
+            <li>Sign in with your Google account</li>
+            <li>Review the permissions requested (YouTube upload access)</li>
+            <li>Click "Allow"</li>
+            <li>You'll be redirected back to the success page</li>
+        </ol>
+        
+        <div class="info">
+            <strong>✓ Success!</strong> Your OAuth tokens are now saved and the API is ready to use.
+        </div>
+    </div>
+    
+    <div class="step">
+        <h3>3.3 Verify Setup</h3>
+        <p>Check the authentication status:</p>
+        <pre>curl http://localhost:3000/oauth/status</pre>
+        
+        <p>Expected response:</p>
+        <pre>{
+  "authenticated": true,
+  "message": "YouTube API is authorized and ready to use"
+}</pre>
+    </div>
+    
+    <h2>Step 4: Render.com Deployment</h2>
+    
+    <div class="step">
+        <h3>4.1 Prepare for Deployment</h3>
+        <p>Make sure your <code>package.json</code> has a start script:</p>
+        <pre>"scripts": {
+  "start": "node src/server.js"
+}</pre>
+    </div>
+    
+    <div class="step">
+        <h3>4.2 Create Render.com Service</h3>
+        <ol>
+            <li>Go to <a href="https://render.com" target="_blank">Render.com</a> and sign up/login</li>
+            <li>Click "New +" → "Web Service"</li>
+            <li>Connect your GitHub repository</li>
+            <li>Configure the service:
+                <ul>
+                    <li>Name: youtube-poster</li>
+                    <li>Environment: Node</li>
+                    <li>Build Command: <code>npm install</code></li>
+                    <li>Start Command: <code>npm start</code></li>
+                </ul>
+            </li>
+            <li>Add environment variables:
+                <ul>
+                    <li><code>GOOGLE_CLIENT_ID</code></li>
+                    <li><code>GOOGLE_CLIENT_SECRET</code></li>
+                    <li><code>GOOGLE_REDIRECT_URI</code> (update with your Render URL)</li>
+                    <li><code>API_KEY</code></li>
+                    <li><code>NODE_ENV=production</code></li>
+                </ul>
+            </li>
+            <li>Click "Create Web Service"</li>
+        </ol>
+    </div>
+    
+    <div class="step">
+        <h3>4.3 Update Google Cloud Redirect URI</h3>
+        <ol>
+            <li>Get your Render.com service URL (e.g., <code>https://youtube-poster.onrender.com</code>)</li>
+            <li>Go back to Google Cloud Console → Credentials</li>
+            <li>Edit your OAuth 2.0 Client ID</li>
+            <li>Add the production redirect URI: <code>https://your-service.onrender.com/oauth/callback</code></li>
+            <li>Save</li>
+        </ol>
+    </div>
+    
+    <div class="step">
+        <h3>4.4 Complete OAuth on Production</h3>
+        <ol>
+            <li>Visit <code>https://your-service.onrender.com/oauth/authorize</code></li>
+            <li>Complete the OAuth flow again for the production environment</li>
+        </ol>
+    </div>
+    
+    <div class="warning">
+        <strong>⚠️ Note:</strong> Render.com free tier services may spin down after inactivity. The OAuth tokens will persist as long as you use a persistent storage solution (see Advanced Configuration).
+    </div>
+    
+    <h2>Advanced Configuration</h2>
+    
+    <h3>Persistent Token Storage</h3>
+    <p>For production, consider using a database or cloud storage for tokens instead of the local file system. The token service can be extended to use:</p>
+    <ul>
+        <li>MongoDB</li>
+        <li>PostgreSQL</li>
+        <li>Google Cloud Storage</li>
+        <li>AWS S3</li>
+    </ul>
+    
+    <h2>Troubleshooting</h2>
+    
+    <h3>OAuth Error: redirect_uri_mismatch</h3>
+    <p>Make sure the redirect URI in your <code>.env</code> file exactly matches what's configured in Google Cloud Console.</p>
+    
+    <h3>Upload fails with authentication error</h3>
+    <p>Your OAuth token may have expired. Visit <code>/oauth/authorize</code> again to re-authenticate.</p>
+    
+    <h3>File upload size limit</h3>
+    <p>The default limit is 256 MB. For larger videos, adjust the <code>limits</code> in <code>src/routes/upload.js</code>.</p>
+    
+    <h2>Next Steps</h2>
+    <ul>
+        <li><a href="api-usage.html">API Usage Guide</a> - Learn how to use the API</li>
+        <li><a href="deployment.html">Deployment Guide</a> - Advanced deployment options</li>
+        <li><a href="../">Back to Home</a></li>
+    </ul>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Usage - YouTube POSTer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1 { color: #FF0000; border-bottom: 3px solid #FF0000; padding-bottom: 10px; }
+        h2 { color: #CC0000; margin-top: 30px; }
+        h3 { color: #990000; }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #FF0000;
+        }
+        .endpoint {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .method {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 3px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .get { background: #61affe; color: white; }
+        .post { background: #49cc90; color: white; }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .info {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        a { color: #FF0000; }
+        a:hover { color: #CC0000; }
+    </style>
+</head>
+<body>
+    <h1>YouTube POSTer - API Usage Guide</h1>
+    
+    <p>This guide explains how to use the YouTube POSTer API to upload videos to YouTube.</p>
+    
+    <h2>Authentication</h2>
+    
+    <p>All API endpoints (except OAuth endpoints) require authentication using an API key. Include the API key in one of two ways:</p>
+    
+    <h3>Option 1: HTTP Header (Recommended)</h3>
+    <pre>X-API-Key: your-api-key-here</pre>
+    
+    <h3>Option 2: Query Parameter</h3>
+    <pre>?apiKey=your-api-key-here</pre>
+    
+    <div class="info">
+        <strong>💡 Tip:</strong> Using the HTTP header is more secure as query parameters may be logged by proxies and servers.
+    </div>
+    
+    <h2>Base URL</h2>
+    <p>Local development: <code>http://localhost:3000</code></p>
+    <p>Production: <code>https://your-service.onrender.com</code></p>
+    
+    <h2>API Endpoints</h2>
+    
+    <div class="endpoint">
+        <h3><span class="method post">POST</span> /api/video</h3>
+        <p>Upload a video to YouTube.</p>
+        
+        <h4>Request</h4>
+        <p><strong>Content-Type:</strong> <code>multipart/form-data</code></p>
+        
+        <h4>Headers</h4>
+        <table>
+            <tr>
+                <th>Header</th>
+                <th>Required</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><code>X-API-Key</code></td>
+                <td>Yes</td>
+                <td>Your API key for authentication</td>
+            </tr>
+        </table>
+        
+        <h4>Form Data Parameters</h4>
+        <table>
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Required</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><code>video</code></td>
+                <td>File</td>
+                <td>Yes</td>
+                <td>The video file to upload (max 256 MB)</td>
+            </tr>
+            <tr>
+                <td><code>title</code></td>
+                <td>String</td>
+                <td>No</td>
+                <td>Video title (default: "Untitled Video")</td>
+            </tr>
+            <tr>
+                <td><code>description</code></td>
+                <td>String</td>
+                <td>No</td>
+                <td>Video description</td>
+            </tr>
+            <tr>
+                <td><code>tags</code></td>
+                <td>JSON Array</td>
+                <td>No</td>
+                <td>Video tags (e.g., '["tag1","tag2"]')</td>
+            </tr>
+            <tr>
+                <td><code>privacyStatus</code></td>
+                <td>String</td>
+                <td>No</td>
+                <td>public, unlisted, or private (default: "private")</td>
+            </tr>
+            <tr>
+                <td><code>categoryId</code></td>
+                <td>String</td>
+                <td>No</td>
+                <td>YouTube category ID (default: "22" - People & Blogs)</td>
+            </tr>
+            <tr>
+                <td><code>madeForKids</code></td>
+                <td>Boolean</td>
+                <td>No</td>
+                <td>"true" or "false" (default: "false")</td>
+            </tr>
+        </table>
+        
+        <h4>Response (Success - 200 OK)</h4>
+        <pre>{
+  "success": true,
+  "message": "Video uploaded successfully",
+  "video": {
+    "id": "dQw4w9WgXcQ",
+    "title": "My Awesome Video",
+    "description": "This is a great video",
+    "privacyStatus": "private",
+    "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+  }
+}</pre>
+        
+        <h4>Response (Error - 401 Unauthorized)</h4>
+        <pre>{
+  "error": "Unauthorized",
+  "message": "API key is required..."
+}</pre>
+    </div>
+    
+    <h2>Code Examples</h2>
+    
+    <h3>cURL</h3>
+    <pre>curl -X POST http://localhost:3000/api/video \
+  -H "X-API-Key: your-api-key-here" \
+  -F "video=@/path/to/video.mp4" \
+  -F "title=My Awesome Video" \
+  -F "description=Check out this cool video!" \
+  -F 'tags=["tutorial","demo"]' \
+  -F "privacyStatus=private"</pre>
+    
+    <h3>JavaScript (Node.js with axios)</h3>
+    <pre>const axios = require('axios');
+const FormData = require('form-data');
+const fs = require('fs');
+
+async function uploadVideo() {
+  const formData = new FormData();
+  formData.append('video', fs.createReadStream('/path/to/video.mp4'));
+  formData.append('title', 'My Awesome Video');
+  formData.append('description', 'Check out this cool video!');
+  formData.append('tags', JSON.stringify(['tutorial', 'demo']));
+  formData.append('privacyStatus', 'private');
+
+  try {
+    const response = await axios.post('http://localhost:3000/api/video', formData, {
+      headers: {
+        'X-API-Key': 'your-api-key-here',
+        ...formData.getHeaders()
+      }
+    });
+    console.log('Upload successful:', response.data);
+  } catch (error) {
+    console.error('Upload failed:', error.response?.data || error.message);
+  }
+}
+
+uploadVideo();</pre>
+    
+    <h3>Python (with requests)</h3>
+    <pre>import requests
+
+def upload_video():
+    url = 'http://localhost:3000/api/video'
+    headers = {
+        'X-API-Key': 'your-api-key-here'
+    }
+    
+    files = {
+        'video': open('/path/to/video.mp4', 'rb')
+    }
+    
+    data = {
+        'title': 'My Awesome Video',
+        'description': 'Check out this cool video!',
+        'tags': '["tutorial","demo"]',
+        'privacyStatus': 'private'
+    }
+    
+    response = requests.post(url, headers=headers, files=files, data=data)
+    
+    if response.status_code == 200:
+        print('Upload successful:', response.json())
+    else:
+        print('Upload failed:', response.json())
+
+upload_video()</pre>
+    
+    <h3>JavaScript (Browser/Frontend)</h3>
+    <pre>async function uploadVideo(file) {
+  const formData = new FormData();
+  formData.append('video', file);
+  formData.append('title', 'My Awesome Video');
+  formData.append('description', 'Check out this cool video!');
+  formData.append('tags', JSON.stringify(['tutorial', 'demo']));
+  formData.append('privacyStatus', 'private');
+
+  try {
+    const response = await fetch('http://localhost:3000/api/video', {
+      method: 'POST',
+      headers: {
+        'X-API-Key': 'your-api-key-here'
+      },
+      body: formData
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      console.log('Upload successful:', result);
+    } else {
+      console.error('Upload failed:', result);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+// Example usage with file input
+document.getElementById('fileInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  uploadVideo(file);
+});</pre>
+    
+    <h2>YouTube Category IDs</h2>
+    <p>Common YouTube category IDs you can use:</p>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Category</th>
+        </tr>
+        <tr><td>1</td><td>Film & Animation</td></tr>
+        <tr><td>2</td><td>Autos & Vehicles</td></tr>
+        <tr><td>10</td><td>Music</td></tr>
+        <tr><td>15</td><td>Pets & Animals</td></tr>
+        <tr><td>17</td><td>Sports</td></tr>
+        <tr><td>19</td><td>Travel & Events</td></tr>
+        <tr><td>20</td><td>Gaming</td></tr>
+        <tr><td>22</td><td>People & Blogs</td></tr>
+        <tr><td>23</td><td>Comedy</td></tr>
+        <tr><td>24</td><td>Entertainment</td></tr>
+        <tr><td>25</td><td>News & Politics</td></tr>
+        <tr><td>26</td><td>Howto & Style</td></tr>
+        <tr><td>27</td><td>Education</td></tr>
+        <tr><td>28</td><td>Science & Technology</td></tr>
+    </table>
+    
+    <h2>OAuth Management Endpoints</h2>
+    
+    <div class="endpoint">
+        <h3><span class="method get">GET</span> /oauth/status</h3>
+        <p>Check if the API is authorized with YouTube.</p>
+        
+        <h4>Response</h4>
+        <pre>{
+  "authenticated": true,
+  "message": "YouTube API is authorized and ready to use"
+}</pre>
+    </div>
+    
+    <div class="endpoint">
+        <h3><span class="method get">GET</span> /oauth/authorize</h3>
+        <p>Start the OAuth flow to authorize the application. Redirects to Google's consent screen.</p>
+    </div>
+    
+    <div class="endpoint">
+        <h3><span class="method post">POST</span> /oauth/revoke</h3>
+        <p>Revoke the OAuth authorization (for testing/reset purposes).</p>
+        
+        <h4>Response</h4>
+        <pre>{
+  "success": true,
+  "message": "Authorization revoked successfully"
+}</pre>
+    </div>
+    
+    <h2>Error Handling</h2>
+    
+    <p>The API uses standard HTTP status codes:</p>
+    <table>
+        <tr>
+            <th>Status Code</th>
+            <th>Meaning</th>
+        </tr>
+        <tr>
+            <td>200</td>
+            <td>Success</td>
+        </tr>
+        <tr>
+            <td>400</td>
+            <td>Bad Request - Missing or invalid parameters</td>
+        </tr>
+        <tr>
+            <td>401</td>
+            <td>Unauthorized - Missing or invalid API key</td>
+        </tr>
+        <tr>
+            <td>403</td>
+            <td>Forbidden - Invalid API key</td>
+        </tr>
+        <tr>
+            <td>500</td>
+            <td>Internal Server Error - Something went wrong</td>
+        </tr>
+    </table>
+    
+    <h2>Best Practices</h2>
+    
+    <ul>
+        <li><strong>Always use HTTPS</strong> in production to protect your API key</li>
+        <li><strong>Keep your API key secret</strong> - don't expose it in client-side code</li>
+        <li><strong>Handle errors gracefully</strong> - check response status codes</li>
+        <li><strong>Use appropriate privacy settings</strong> - default is "private" for safety</li>
+        <li><strong>Validate video files</strong> before uploading to avoid errors</li>
+        <li><strong>Set meaningful titles and descriptions</strong> for better discoverability</li>
+    </ul>
+    
+    <div class="warning">
+        <strong>⚠️ Rate Limits:</strong> YouTube Data API has quota limits. Be mindful of the number of uploads. See <a href="https://developers.google.com/youtube/v3/getting-started#quota" target="_blank">YouTube API quota documentation</a>.
+    </div>
+    
+    <h2>Next Steps</h2>
+    <ul>
+        <li><a href="setup.html">Setup Guide</a> - Initial setup and configuration</li>
+        <li><a href="deployment.html">Deployment Guide</a> - Deploy to production</li>
+        <li><a href="../">Back to Home</a></li>
+    </ul>
+</body>
+</html>
