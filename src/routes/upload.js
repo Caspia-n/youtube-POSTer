@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const { apiKeyAuth } = require('../middleware/auth');
 const youtubeService = require('../services/youtubeService');
-const fs = require('fs');
+const fs = require('fs').promises;
 
 // Configure multer for file uploads
 const upload = multer({
@@ -32,23 +32,37 @@ router.post('/video', apiKeyAuth, upload.single('video'), async (req, res) => {
     }
 
     // Parse metadata from request body
+    let tags = [];
+    if (req.body.tags) {
+      try {
+        tags = JSON.parse(req.body.tags);
+      } catch (e) {
+        return res.status(400).json({
+          error: 'Bad Request',
+          message: 'Invalid JSON format for tags parameter',
+        });
+      }
+    }
+
     const metadata = {
       title: req.body.title,
       description: req.body.description,
-      tags: req.body.tags ? JSON.parse(req.body.tags) : [],
+      tags,
       categoryId: req.body.categoryId,
       privacyStatus: req.body.privacyStatus || 'private',
       madeForKids: req.body.madeForKids === 'true',
     };
 
     // Create read stream for the uploaded file
-    const videoStream = fs.createReadStream(req.file.path);
+    const videoStream = require('fs').createReadStream(req.file.path);
 
     // Upload to YouTube
     const result = await youtubeService.uploadVideo(videoStream, metadata);
 
-    // Clean up uploaded file
-    fs.unlinkSync(req.file.path);
+    // Clean up uploaded file (async)
+    await fs.unlink(req.file.path).catch(err => {
+      console.error('Error deleting uploaded file:', err);
+    });
 
     res.json({
       success: true,
@@ -62,13 +76,11 @@ router.post('/video', apiKeyAuth, upload.single('video'), async (req, res) => {
       },
     });
   } catch (error) {
-    // Clean up file on error
+    // Clean up file on error (async)
     if (req.file && req.file.path) {
-      try {
-        fs.unlinkSync(req.file.path);
-      } catch (e) {
-        console.error('Error cleaning up file:', e);
-      }
+      await fs.unlink(req.file.path).catch(err => {
+        console.error('Error cleaning up file:', err);
+      });
     }
 
     console.error('Upload error:', error);
