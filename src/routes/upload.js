@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
+const path = require('path');
 const { apiKeyAuth } = require('../middleware/auth');
 const youtubeService = require('../services/youtubeService');
 const fs = require('fs').promises;
@@ -12,12 +13,24 @@ const upload = multer({
     fileSize: 256 * 1024 * 1024, // 256 MB limit
   },
   fileFilter: (req, file, cb) => {
-    // Accept video files
+    // Accept video files based on MIME type or file extension
+    // Check MIME type first
     if (file.mimetype.startsWith('video/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only video files are allowed'));
+      return cb(null, true);
     }
+    
+    // Fallback to file extension check for clients that don't set correct MIME type
+    const ext = path.extname(file.originalname).toLowerCase();
+    const acceptedExtensions = [
+      '.mp4', '.mov', '.avi', '.flv', '.wmv', '.mpg', '.mpeg',
+      '.3gp', '.webm', '.mkv', '.m4v', '.asf', '.vob', '.ogv'
+    ];
+    
+    if (acceptedExtensions.includes(ext)) {
+      return cb(null, true);
+    }
+    
+    cb(new Error('Only video files are allowed'));
   },
 });
 
