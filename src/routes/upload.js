@@ -6,6 +6,12 @@ const { apiKeyAuth } = require('../middleware/auth');
 const youtubeService = require('../services/youtubeService');
 const fs = require('fs').promises;
 
+// Accepted video file extensions (YouTube supported formats)
+const ACCEPTED_VIDEO_EXTENSIONS = [
+  '.mp4', '.mov', '.avi', '.flv', '.wmv', '.mpg', '.mpeg',
+  '.3gp', '.webm', '.mkv', '.m4v', '.asf', '.vob', '.ogv'
+];
+
 // Configure multer for file uploads
 const upload = multer({
   dest: 'uploads/',
@@ -20,14 +26,11 @@ const upload = multer({
     }
     
     // Fallback to file extension check for clients that don't set correct MIME type
-    const ext = path.extname(file.originalname).toLowerCase();
-    const acceptedExtensions = [
-      '.mp4', '.mov', '.avi', '.flv', '.wmv', '.mpg', '.mpeg',
-      '.3gp', '.webm', '.mkv', '.m4v', '.asf', '.vob', '.ogv'
-    ];
-    
-    if (acceptedExtensions.includes(ext)) {
-      return cb(null, true);
+    if (file.originalname) {
+      const ext = path.extname(file.originalname).toLowerCase();
+      if (ACCEPTED_VIDEO_EXTENSIONS.includes(ext)) {
+        return cb(null, true);
+      }
     }
     
     cb(new Error('Only video files are allowed'));
