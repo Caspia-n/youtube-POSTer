@@ -1,0 +1,32 @@
+{
+  "name": "youtube-poster",
+  "version": "1.0.0",
+  "description": "Simple API for uploading videos to YouTube with one-time OAuth setup and API key authentication",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "youtube",
+    "api",
+    "video",
+    "upload",
+    "oauth",
+    "rest-api"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
+    "googleapis": "^170.1.0",
+    "multer": "^2.0.2"
+  }
+}

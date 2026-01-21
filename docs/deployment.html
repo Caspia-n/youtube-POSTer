@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deployment Guide - YouTube POSTer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1 { color: #FF0000; border-bottom: 3px solid #FF0000; padding-bottom: 10px; }
+        h2 { color: #CC0000; margin-top: 30px; }
+        h3 { color: #990000; }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #FF0000;
+        }
+        .platform {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .info {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        ul { margin-left: 20px; }
+        a { color: #FF0000; }
+        a:hover { color: #CC0000; }
+    </style>
+</head>
+<body>
+    <h1>YouTube POSTer - Deployment Guide</h1>
+    
+    <p>This guide covers deploying YouTube POSTer to various platforms.</p>
+    
+    <h2>Choosing a Platform</h2>
+    
+    <p>We recommend <strong>Render.com</strong> for its simplicity and free tier, but the application can be deployed to any Node.js hosting platform.</p>
+    
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <tr style="background: #f8f9fa;">
+            <th style="border: 1px solid #ddd; padding: 12px;">Platform</th>
+            <th style="border: 1px solid #ddd; padding: 12px;">Pros</th>
+            <th style="border: 1px solid #ddd; padding: 12px;">Cons</th>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ddd; padding: 12px;"><strong>Render.com</strong></td>
+            <td style="border: 1px solid #ddd; padding: 12px;">Free tier, Easy setup, Auto-deploy from Git</td>
+            <td style="border: 1px solid #ddd; padding: 12px;">Free tier spins down after inactivity</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ddd; padding: 12px;"><strong>Heroku</strong></td>
+            <td style="border: 1px solid #ddd; padding: 12px;">Popular, Many integrations</td>
+            <td style="border: 1px solid #ddd; padding: 12px;">No free tier anymore</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ddd; padding: 12px;"><strong>Railway</strong></td>
+            <td style="border: 1px solid #ddd; padding: 12px;">Developer-friendly, Good free tier</td>
+            <td style="border: 1px solid #ddd; padding: 12px;">Relatively new platform</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ddd; padding: 12px;"><strong>Google Cloud Run</strong></td>
+            <td style="border: 1px solid #ddd; padding: 12px;">Generous free tier, Scales to zero</td>
+            <td style="border: 1px solid #ddd; padding: 12px;">Requires Docker knowledge</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ddd; padding: 12px;"><strong>AWS / DigitalOcean</strong></td>
+            <td style="border: 1px solid #ddd; padding: 12px;">Full control, High performance</td>
+            <td style="border: 1px solid #ddd; padding: 12px;">More complex, Costs money</td>
+        </tr>
+    </table>
+    
+    <h2>Deployment: Render.com (Recommended)</h2>
+    
+    <div class="platform">
+        <h3>Step-by-Step Render.com Deployment</h3>
+        
+        <h4>1. Prepare Your Repository</h4>
+        <p>Ensure your code is pushed to GitHub, GitLab, or Bitbucket.</p>
+        
+        <h4>2. Create Render Account</h4>
+        <ol>
+            <li>Go to <a href="https://render.com" target="_blank">render.com</a></li>
+            <li>Sign up with GitHub (recommended for easy repo access)</li>
+        </ol>
+        
+        <h4>3. Create a New Web Service</h4>
+        <ol>
+            <li>Click "New +" → "Web Service"</li>
+            <li>Connect your repository</li>
+            <li>Configure:
+                <ul>
+                    <li><strong>Name:</strong> youtube-poster (or your choice)</li>
+                    <li><strong>Environment:</strong> Node</li>
+                    <li><strong>Region:</strong> Choose closest to your users</li>
+                    <li><strong>Branch:</strong> main (or your default branch)</li>
+                    <li><strong>Build Command:</strong> <code>npm install</code></li>
+                    <li><strong>Start Command:</strong> <code>npm start</code></li>
+                    <li><strong>Plan:</strong> Free</li>
+                </ul>
+            </li>
+        </ol>
+        
+        <h4>4. Add Environment Variables</h4>
+        <p>In the Environment section, add:</p>
+        <pre>GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-client-secret
+GOOGLE_REDIRECT_URI=https://your-app.onrender.com/oauth/callback
+API_KEY=your-secure-api-key
+NODE_ENV=production
+PORT=3000</pre>
+        
+        <div class="info">
+            <strong>💡 Note:</strong> Render will provide you with a URL like <code>https://youtube-poster.onrender.com</code>. Update <code>GOOGLE_REDIRECT_URI</code> with this URL.
+        </div>
+        
+        <h4>5. Update Google Cloud Console</h4>
+        <ol>
+            <li>Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Credentials</a></li>
+            <li>Edit your OAuth 2.0 Client ID</li>
+            <li>Add Authorized redirect URI: <code>https://your-app.onrender.com/oauth/callback</code></li>
+            <li>Save</li>
+        </ol>
+        
+        <h4>6. Deploy</h4>
+        <ol>
+            <li>Click "Create Web Service"</li>
+            <li>Wait for the build and deployment to complete (5-10 minutes)</li>
+            <li>Visit your app URL to verify it's running</li>
+        </ol>
+        
+        <h4>7. Complete OAuth Setup</h4>
+        <ol>
+            <li>Visit <code>https://your-app.onrender.com/oauth/authorize</code></li>
+            <li>Complete the Google OAuth flow</li>
+            <li>Tokens will be saved on the server</li>
+        </ol>
+        
+        <div class="success">
+            <strong>✓ Deployment Complete!</strong> Your API is now live and ready to use.
+        </div>
+    </div>
+    
+    <h2>Deployment: Railway</h2>
+    
+    <div class="platform">
+        <h3>Railway Deployment</h3>
+        
+        <ol>
+            <li>Go to <a href="https://railway.app" target="_blank">railway.app</a></li>
+            <li>Sign up with GitHub</li>
+            <li>Click "New Project" → "Deploy from GitHub repo"</li>
+            <li>Select your repository</li>
+            <li>Add environment variables (same as Render)</li>
+            <li>Railway will auto-detect Node.js and deploy</li>
+            <li>Get your deployment URL from the dashboard</li>
+            <li>Update Google OAuth redirect URI</li>
+            <li>Complete OAuth authorization</li>
+        </ol>
+    </div>
+    
+    <h2>Deployment: Google Cloud Run</h2>
+    
+    <div class="platform">
+        <h3>Google Cloud Run (Docker-based)</h3>
+        
+        <h4>1. Create Dockerfile</h4>
+        <pre>FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["npm", "start"]</pre>
+        
+        <h4>2. Build and Deploy</h4>
+        <pre># Set your project ID
+gcloud config set project YOUR_PROJECT_ID
+
+# Build the container
+gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/youtube-poster
+
+# Deploy to Cloud Run
+gcloud run deploy youtube-poster \
+  --image gcr.io/YOUR_PROJECT_ID/youtube-poster \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars "GOOGLE_CLIENT_ID=xxx,GOOGLE_CLIENT_SECRET=xxx,API_KEY=xxx"</pre>
+        
+        <h4>3. Update OAuth redirect URI with Cloud Run URL</h4>
+    </div>
+    
+    <h2>Deployment: Heroku</h2>
+    
+    <div class="platform">
+        <h3>Heroku Deployment</h3>
+        
+        <pre># Install Heroku CLI
+# https://devcenter.heroku.com/articles/heroku-cli
+
+# Login
+heroku login
+
+# Create app
+heroku create youtube-poster
+
+# Set environment variables
+heroku config:set GOOGLE_CLIENT_ID=xxx
+heroku config:set GOOGLE_CLIENT_SECRET=xxx
+heroku config:set GOOGLE_REDIRECT_URI=https://youtube-poster.herokuapp.com/oauth/callback
+heroku config:set API_KEY=xxx
+heroku config:set NODE_ENV=production
+
+# Deploy
+git push heroku main
+
+# Open app
+heroku open</pre>
+    </div>
+    
+    <h2>Production Considerations</h2>
+    
+    <h3>1. Token Persistence</h3>
+    <div class="warning">
+        <strong>⚠️ Important:</strong> The default file-based token storage may not persist on platforms that use ephemeral file systems. Consider using:
+        <ul>
+            <li><strong>Database:</strong> MongoDB, PostgreSQL, MySQL</li>
+            <li><strong>Cloud Storage:</strong> AWS S3, Google Cloud Storage</li>
+            <li><strong>Redis:</strong> For in-memory token storage</li>
+        </ul>
+    </div>
+    
+    <h3>2. Environment Variables Security</h3>
+    <ul>
+        <li>Never commit <code>.env</code> files to version control</li>
+        <li>Use platform-specific secret management</li>
+        <li>Rotate API keys regularly</li>
+        <li>Use different keys for development and production</li>
+    </ul>
+    
+    <h3>3. File Upload Limits</h3>
+    <p>Default is 256 MB. For larger files:</p>
+    <ul>
+        <li>Increase the limit in <code>src/routes/upload.js</code></li>
+        <li>Configure your hosting platform's request size limits</li>
+        <li>Consider using resumable uploads for very large files</li>
+    </ul>
+    
+    <h3>4. CORS Configuration</h3>
+    <p>The app allows all origins by default. For production, consider restricting CORS:</p>
+    <pre>// In src/app.js
+app.use(cors({
+  origin: ['https://your-frontend.com', 'https://another-domain.com']
+}));</pre>
+    
+    <h3>5. Rate Limiting</h3>
+    <p>Add rate limiting to prevent abuse:</p>
+    <pre>npm install express-rate-limit
+
+// In src/app.js
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10 // limit each IP to 10 requests per windowMs
+});
+
+app.use('/api/', limiter);</pre>
+    
+    <h3>6. Logging and Monitoring</h3>
+    <ul>
+        <li>Use a logging service (e.g., Logtail, Papertrail)</li>
+        <li>Monitor uptime with UptimeRobot or similar</li>
+        <li>Track errors with Sentry or similar</li>
+        <li>Monitor API usage and quotas</li>
+    </ul>
+    
+    <h3>7. HTTPS</h3>
+    <div class="info">
+        Most modern platforms (Render, Heroku, Railway, Cloud Run) automatically provide HTTPS. Always use HTTPS in production to protect API keys and user data.
+    </div>
+    
+    <h2>Scaling Considerations</h2>
+    
+    <h3>Horizontal Scaling</h3>
+    <p>If using multiple instances:</p>
+    <ul>
+        <li>Use a shared database for token storage (not local files)</li>
+        <li>Consider a session store like Redis</li>
+        <li>Ensure OAuth tokens are accessible to all instances</li>
+    </ul>
+    
+    <h3>Performance Optimization</h3>
+    <ul>
+        <li>Enable gzip compression</li>
+        <li>Use a CDN for static assets</li>
+        <li>Implement caching where appropriate</li>
+        <li>Optimize video processing pipeline</li>
+    </ul>
+    
+    <h2>Troubleshooting</h2>
+    
+    <h3>Deployment Failed</h3>
+    <ul>
+        <li>Check build logs for errors</li>
+        <li>Ensure all dependencies are in <code>package.json</code></li>
+        <li>Verify Node.js version compatibility</li>
+    </ul>
+    
+    <h3>OAuth Not Working</h3>
+    <ul>
+        <li>Verify redirect URI matches exactly in Google Console</li>
+        <li>Check environment variables are set correctly</li>
+        <li>Ensure HTTPS is being used (not HTTP)</li>
+    </ul>
+    
+    <h3>Uploads Failing</h3>
+    <ul>
+        <li>Check file size limits</li>
+        <li>Verify OAuth token is valid</li>
+        <li>Check YouTube API quotas</li>
+        <li>Review server logs for errors</li>
+    </ul>
+    
+    <h2>Cost Estimation</h2>
+    
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <tr style="background: #f8f9fa;">
+            <th style="border: 1px solid #ddd; padding: 12px;">Platform</th>
+            <th style="border: 1px solid #ddd; padding: 12px;">Free Tier</th>
+            <th style="border: 1px solid #ddd; padding: 12px;">Paid Plans</th>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ddd; padding: 12px;">Render</td>
+            <td style="border: 1px solid #ddd; padding: 12px;">750 hours/month, sleeps after inactivity</td>
+            <td style="border: 1px solid #ddd; padding: 12px;">$7/month for always-on</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ddd; padding: 12px;">Railway</td>
+            <td style="border: 1px solid #ddd; padding: 12px;">$5 credit/month</td>
+            <td style="border: 1px solid #ddd; padding: 12px;">Pay for usage</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ddd; padding: 12px;">Cloud Run</td>
+            <td style="border: 1px solid #ddd; padding: 12px;">2M requests/month</td>
+            <td style="border: 1px solid #ddd; padding: 12px;">Pay per request</td>
+        </tr>
+    </table>
+    
+    <h2>Next Steps</h2>
+    <ul>
+        <li><a href="setup.html">Setup Guide</a> - Initial configuration</li>
+        <li><a href="api-usage.html">API Usage</a> - How to use the API</li>
+        <li><a href="../">Back to Home</a></li>
+    </ul>
+</body>
+</html>

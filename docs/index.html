@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube POSTer - Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .intro {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 5px;
+            margin-bottom: 40px;
+            border-left: 4px solid #FF0000;
+        }
+        
+        .intro h2 {
+            color: #FF0000;
+            margin-bottom: 15px;
+        }
+        
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .doc-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 4px solid #FF0000;
+        }
+        
+        .doc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .doc-card h3 {
+            color: #FF0000;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .doc-card p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .doc-card a {
+            display: inline-block;
+            background: #FF0000;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        
+        .doc-card a:hover {
+            background: #CC0000;
+        }
+        
+        .features {
+            margin: 40px 0;
+        }
+        
+        .features h2 {
+            color: #FF0000;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features li {
+            padding: 12px 0 12px 30px;
+            position: relative;
+        }
+        
+        .features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .quick-start {
+            background: #d1ecf1;
+            padding: 30px;
+            border-radius: 5px;
+            margin: 40px 0;
+            border-left: 4px solid #0c5460;
+        }
+        
+        .quick-start h2 {
+            color: #0c5460;
+            margin-bottom: 20px;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        footer {
+            background: #2d2d2d;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        footer a {
+            color: #FF0000;
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📹 YouTube POSTer</h1>
+            <p>Simple API for uploading videos to YouTube with API key authentication</p>
+        </header>
+        
+        <div class="content">
+            <div class="intro">
+                <h2>Welcome to YouTube POSTer!</h2>
+                <p>
+                    YouTube POSTer is a REST API service that simplifies uploading videos to YouTube. 
+                    Instead of implementing OAuth flow in every client application, set up OAuth once 
+                    on the server, then use simple API key authentication for all uploads.
+                </p>
+            </div>
+            
+            <div class="features">
+                <h2>Key Features</h2>
+                <ul>
+                    <li>One-time OAuth 2.0 setup - authorize once, use forever</li>
+                    <li>Simple API key authentication for clients</li>
+                    <li>RESTful API with multipart file uploads</li>
+                    <li>CORS enabled - call from any origin</li>
+                    <li>Easy deployment to Render.com or any Node.js platform</li>
+                    <li>Automatic token refresh - no re-authorization needed</li>
+                    <li>Support for video metadata (title, description, tags, privacy)</li>
+                    <li>Clean, well-documented codebase</li>
+                </ul>
+            </div>
+            
+            <div class="docs-grid">
+                <div class="doc-card">
+                    <h3>🚀 Setup Guide</h3>
+                    <p>
+                        Get started with YouTube POSTer. Learn how to set up Google OAuth, 
+                        configure the application, and complete the initial authorization.
+                    </p>
+                    <a href="setup.html">Read Setup Guide →</a>
+                </div>
+                
+                <div class="doc-card">
+                    <h3>📚 API Usage</h3>
+                    <p>
+                        Complete API reference with code examples in cURL, JavaScript, Python, 
+                        and more. Learn how to upload videos and manage authentication.
+                    </p>
+                    <a href="api-usage.html">View API Docs →</a>
+                </div>
+                
+                <div class="doc-card">
+                    <h3>☁️ Deployment</h3>
+                    <p>
+                        Deploy YouTube POSTer to Render.com, Heroku, Railway, Google Cloud Run, 
+                        or any Node.js platform. Production best practices included.
+                    </p>
+                    <a href="deployment.html">Deployment Guide →</a>
+                </div>
+            </div>
+            
+            <div class="quick-start">
+                <h2>Quick Start</h2>
+                <p><strong>1. Clone and install:</strong></p>
+                <pre>git clone &lt;repository-url&gt;
+cd youtube-POSTer
+npm install</pre>
+                
+                <p><strong>2. Configure environment:</strong></p>
+                <pre>cp .env.example .env
+# Edit .env with your Google OAuth credentials</pre>
+                
+                <p><strong>3. Start the server:</strong></p>
+                <pre>npm start</pre>
+                
+                <p><strong>4. Authorize with Google:</strong></p>
+                <p>Visit <code>http://localhost:3000/oauth/authorize</code></p>
+                
+                <p><strong>5. Upload a video:</strong></p>
+                <pre>curl -X POST http://localhost:3000/api/video \
+  -H "X-API-Key: your-api-key" \
+  -F "video=@video.mp4" \
+  -F "title=My Video"</pre>
+            </div>
+            
+            <div style="text-align: center; margin: 40px 0;">
+                <h2 style="color: #FF0000; margin-bottom: 20px;">Ready to Get Started?</h2>
+                <p style="font-size: 1.1em; margin-bottom: 30px;">
+                    Choose your path: set up locally or deploy to production
+                </p>
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <a href="setup.html" style="display: inline-block; background: #FF0000; color: white; padding: 15px 30px; border-radius: 5px; text-decoration: none; font-weight: bold;">
+                        Setup Locally
+                    </a>
+                    <a href="deployment.html" style="display: inline-block; background: #667eea; color: white; padding: 15px 30px; border-radius: 5px; text-decoration: none; font-weight: bold;">
+                        Deploy Now
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>
+                <strong>YouTube POSTer</strong> - Making YouTube uploads simple<br>
+                <a href="https://github.com/Caspia-n/youtube-POSTer" target="_blank">View on GitHub</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
