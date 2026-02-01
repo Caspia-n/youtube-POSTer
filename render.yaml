@@ -18,3 +18,5 @@ services:
         sync: false
       - key: API_KEY
         sync: false
+      - key: YOUTUBE_OAUTH_TOKEN
+        sync: false

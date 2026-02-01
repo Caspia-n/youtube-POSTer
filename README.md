@@ -199,7 +199,19 @@ See the **[Deployment Guide](docs/deployment.html)** for detailed instructions.
 | `GOOGLE_REDIRECT_URI` | OAuth callback URL | `http://localhost:3000/oauth/callback` |
 | `API_KEY` | Client authentication key | Required |
 | `TOKEN_PATH` | Token storage path | `./tokens/youtube-token.json` |
+| `YOUTUBE_OAUTH_TOKEN` | OAuth token JSON (for persistent storage) | Optional |
 | `NODE_ENV` | Environment | `development` |
+
+### Persistent OAuth Token Storage (Render.com)
+
+On platforms with ephemeral file systems like Render.com, tokens saved to disk are lost on each deployment. To persist your OAuth token:
+
+1. Complete the OAuth flow by visiting `/oauth/authorize`
+2. Check your server logs for the `YOUTUBE_OAUTH_TOKEN` value
+3. Copy the JSON string to your `YOUTUBE_OAUTH_TOKEN` environment variable in Render.com dashboard
+4. Redeploy or restart your service
+
+The token will now persist across deployments.
 
 ## 📊 Project Structure
 
